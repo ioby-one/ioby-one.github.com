@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.ioby.one</id>
     <title>Blog by One</title>
-    <updated>2022-01-03T15:24:23.811Z</updated>
+    <updated>2022-01-03T15:25:37.106Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.ioby.one"/>
     <link rel="self" href="https://blog.ioby.one/atom.xml"/>
@@ -16,8 +16,12 @@
         <link href="https://blog.ioby.one/post/install-jellyfin-on-PVE-with-LXC-and-enable-hardware-acceleration/">
         </link>
         <updated>2021-04-05T13:55:55.000Z</updated>
+        <summary type="html"><![CDATA[<p>V0.1 2021.04.05 基于 intel CPU的软路由(集显HD610)，PVE 6.3-3，jellyfin 10.7.1</p>
+<p>此文作为自己折腾的备份记录，主要是方便自己重新折腾。使用LXC容器配置jellyfin服务供家庭娱乐使用，并没有采用常规的docker方案。主要是docker的配置弄起来还是略微麻烦，我目前只需要用jellyfin。</p>
+]]></summary>
         <content type="html"><![CDATA[<p>V0.1 2021.04.05 基于 intel CPU的软路由(集显HD610)，PVE 6.3-3，jellyfin 10.7.1</p>
 <p>此文作为自己折腾的备份记录，主要是方便自己重新折腾。使用LXC容器配置jellyfin服务供家庭娱乐使用，并没有采用常规的docker方案。主要是docker的配置弄起来还是略微麻烦，我目前只需要用jellyfin。</p>
+<!-- more -->
 <p>首先按常规操作配置一个LXC容器，目前PVE中自带的容器以ubuntu 20.04版本操作起来较为方便，我自己也使用的这个&quot;ubuntu-20.04-standard_20.04-1_amd64.tar.gz&quot;。</p>
 <h2 id="一-配置lxc容器">一、配置LXC容器</h2>
 <h3 id="1新建一个lxc容器">1.新建一个LXC容器</h3>
