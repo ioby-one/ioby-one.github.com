@@ -1,0 +1,404 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>PVE上安装jellyfin并实现硬解（on LXC） | Gridea</title>
+
+<link rel="shortcut icon" href="https://ioby-one.github.com/favicon.ico?v=1641221357161">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://ioby-one.github.com/styles/main.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"> -->
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script> -->
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="/">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            Gridea
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" id="changeNavbar">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+            <div class="nav-item">
+                
+                <a href="/" class="menu gt-a-link">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/archives" class="menu gt-a-link">
+                    归档
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/tags" class="menu gt-a-link">
+                    标签
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/post/about" class="menu gt-a-link">
+                    关于
+                </a>
+                
+            </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1641221357161"
+                action="/search/">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+<script>
+    /* 移动端导航栏展开/收起切换 */
+    document.getElementById('changeNavbar').onclick = () => {
+        var element = document.getElementById('navbarSupportedContent');
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    PVE上安装jellyfin并实现硬解（on LXC）
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2021-04-05 ·
+                    </time>
+                    
+                        <a href="https://ioby-one.github.com/tag/g_Ee8Zxmq/" class="post-tags">
+                            # Jellyfin
+                        </a>
+                    
+                        <a href="https://ioby-one.github.com/tag/7PxM4a-c2a/" class="post-tags">
+                            # LXC
+                        </a>
+                    
+                        <a href="https://ioby-one.github.com/tag/tPAPLxp5Z_/" class="post-tags">
+                            # NFS
+                        </a>
+                    
+                        <a href="https://ioby-one.github.com/tag/nz23g-4jlA/" class="post-tags">
+                            # OMV
+                        </a>
+                    
+                        <a href="https://ioby-one.github.com/tag/bmGK-qUeFy/" class="post-tags">
+                            # PVE
+                        </a>
+                    
+                        <a href="https://ioby-one.github.com/tag/_tbih4CXYn/" class="post-tags">
+                            # Ubuntu
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <p>V0.1 2021.04.05 基于 intel CPU的软路由(集显HD610)，PVE 6.3-3，jellyfin 10.7.1</p>
+<p>此文作为自己折腾的备份记录，主要是方便自己重新折腾。使用LXC容器配置jellyfin服务供家庭娱乐使用，并没有采用常规的docker方案。主要是docker的配置弄起来还是略微麻烦，我目前只需要用jellyfin。</p>
+<p>首先按常规操作配置一个LXC容器，目前PVE中自带的容器以ubuntu 20.04版本操作起来较为方便，我自己也使用的这个&quot;ubuntu-20.04-standard_20.04-1_amd64.tar.gz&quot;。</p>
+<h2 id="一-配置lxc容器">一、配置LXC容器</h2>
+<h3 id="1新建一个lxc容器">1.新建一个LXC容器</h3>
+<p>由于需要访问宿主机的集成显卡以及挂载NFS，配置一个特权容器(<strong>创建时将“无特权的容器”前面的勾去掉</strong>)。</p>
+<p><em>由于我暂时未使用docker，此设置是否有影响建议自行确认，根据<a href="https://zhuanlan.zhihu.com/p/260528145">参考文章</a>使用docker需要无特权的容器，但和评论有出入。</em></p>
+<blockquote>
+<p>OS:ubuntu 20.04<br>
+磁盘：10G local-lvm(默认)<br>
+CPU:4核 默认权重<br>
+内存:2G 交换分区：512M(默认)<br>
+手动设置IPv4地址<br>
+IPV4/CIDR: 设置的内网IP地址/24 （后面的&quot;/24&quot;必须跟上）<br>
+网关：路由器地址</p>
+</blockquote>
+<hr>
+<p>配置完成后在容器设置的选项处，点击签名，<strong>将NFS勾上</strong>。</p>
+<p><em>注：我是使用的OMV作为存储，在LXC容器中通过挂载OMV分享的NFS来进行访问，可根据需要自行判断自己是否需要执行此操作。</em></p>
+<h3 id="2优化容器系统设置">2.优化容器系统设置</h3>
+<p>容器配置完成后启动容器，由于默认禁止ROOT用户SSH访问，需修改“/etc/ssh/sshd_config”文件以便于后续操作。</p>
+<pre><code class="language-bash">nano /etc/ssh/sshd_config
+</code></pre>
+<p>nano是一个比vim简单方便的命令行文本编辑器，打开文件后找到“PermitRootLogin”行，将前方的注释“#”去掉，按以下修改即可。或可另起一行，按以下输入即可。</p>
+<pre><code class="language-bash">PermitRootLogin yes
+</code></pre>
+<p>完成后“ctrl+o”保存文件，“ctrl+x”退出</p>
+<p>然后“reboot”重启后使用SSH软件连接（例如finalssh），操作上更为便利。</p>
+<p>使用以下命令更改系统自带软件源为第三方源,或采取其他方式也可。</p>
+<pre><code class="language-bash">nano /etc/apt/sources.list
+</code></pre>
+<p>将文本中的内容替换为以下内容即可（<strong>以下内容仅适用于Ubuntu 20.04</strong>或衍生发行版，内容来源：<a href="https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/">清华大学开源软件镜像站</a>）</p>
+<pre><code class="language-bash"># 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted universe multiverse
+</code></pre>
+<p>完成后输入命令更新软件</p>
+<pre><code class="language-bash">apt update &amp;&amp; apt dist-upgrade
+</code></pre>
+<p>到目前为止，容器的安装和调整就算基本完成了。</p>
+<h2 id="二-jellyfin的安装">二、jellyfin的安装</h2>
+<p>根据<a href="https://jellyfin.org/downloads/">官网操作</a>，逐行输入以下命令执行安装即可</p>
+<pre><code class="language-bash">sudo apt install apt-transport-https
+wget -O - https://repo.jellyfin.org/jellyfin_team.gpg.key | sudo apt-key add -
+echo &quot;deb [arch=$( dpkg --print-architecture )] https://repo.jellyfin.org/$( awk -F'=' '/^ID=/{ print $NF }' /etc/os-release ) $( awk -F'=' '/^VERSION_CODENAME=/{ print $NF }' /etc/os-release ) main&quot; | sudo tee /etc/apt/sources.list.d/jellyfin.list
+sudo apt update
+sudo apt install jellyfin
+</code></pre>
+<p>安装完成后执行命令</p>
+<pre><code class="language-bash">service jellyfin status
+</code></pre>
+<p>在输出中可见“Active: active(running) &quot;字样，说明安装运行成功。</p>
+<p>后续可在浏览器中访问”IP地址:8096&quot;即可完成jellyfin的后续设置。</p>
+<p>由于此时还未完成硬解的配置和NFS的挂载，可简单设置登录密码和语言等常规设置即可，硬解及媒体库设置可待后续设置完成后再进行操作。</p>
+<h2 id="三-硬解的配置">三、硬解的配置</h2>
+<p>这里需要注意一点，配置硬解时，<strong>显卡不能被直通。</strong></p>
+<p>补充：关闭显卡直通，编辑/etc/default/grub文件，将GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet video=efifb:off  intel_iommu=on&quot; 中的“video=efifb:off ”删掉后</p>
+<pre><code class="language-bash">update-grub
+</code></pre>
+<p><strong>以下操作在PVE上进行，保持容器处于关闭状态</strong></p>
+<p>可先使用 <a href="https://github.com/ivanhao/pvetools">PVE-TOOLS脚本</a> （这是一个为proxmox ve写的工具脚本（理论上debian9+可以用）。包括配置邮件，samba，NFS，zfs，嵌套虚拟化，docker，硬盘直通等功能）对PVE的调整和优化。</p>
+<p>主要建议执行以下操作：1、更换软件源；2、配置CPU省电；其余看自己需求。</p>
+<p>完成后执行以下操作</p>
+<pre><code class="language-bash">apt-get update
+apt-get install -y intel-media-va-driver-non-free &amp;&amp; i965-va-driver-shaders &amp;&amp; vainfo
+</code></pre>
+<p>*部分教程使用的是“i965-va-driver”驱动，具体来说主要是开源/不开源以及intel的GPU代数有一定关系。*目前来说，较新的Intel GPU主要使用的应该是 intel-media-va-driver-non-free 和 i965-va-driver-shaders 这两个闭源驱动。</p>
+<p>安装完成后输入以下命令</p>
+<pre><code class="language-bash">vainfo
+</code></pre>
+<p>正常情况下会得到的输出如下(完整版见后续内容)</p>
+<pre><code class="language-bash">......
+VAProfileVC1Simple : VAEntrypointVLD
+VAProfileVC1Main : VAEntrypointVLD
+......
+VAProfileHEVCMain10 : VAEntrypointVLD
+VAProfileVP9Profile0 : VAEntrypointVLD
+VAProfileVP9Profile2 : VAEntrypointVLD
+</code></pre>
+<p>若显示有误请检查是否已经配置直通导致PVE不能使用GPU。调整成功后，执行以下命令：</p>
+<pre><code class="language-bash">ls -l /etc/dri
+</code></pre>
+<p>正常情况下会得到如下的输出</p>
+<pre><code class="language-bash">root@PVE:~# ls -l /dev/dri/
+total 0
+drwxr-xr-x 2 root root         80 Apr  5 16:56 by-path
+crw-rw---- 1 root video  226,   0 Apr  5 16:56 card0
+crwxrwxrwx 1 root render 226, 128 Apr  5 16:56 renderD128
+</code></pre>
+<p>其中的 <strong>renderD128</strong> 就是我们需要在LXC容器中使用的显卡，对应的设备号为 <strong>226, 128</strong></p>
+<p>输入以下命令编辑容器配置，其中 <strong>103</strong> 需替换成你自己目前的容器ID号，在PVE的节点位置可以看到对应容器或虚拟机的ID号。</p>
+<pre><code class="language-bash">nano /etc/pve/lxc/103.conf
+</code></pre>
+<p>然后在文件的最后加入以下内容,其中的  <strong>226:128</strong> 按你自己的显卡设备号做更改</p>
+<pre><code class="language-bash">lxc.cgroup.devices.allow: c 226:128 rwm
+lxc.mount.entry: /dev/dri/renderD128 dev/dri/renderD128 none bind,optional,create=file
+</code></pre>
+<p>**完成后，启动容器。**同时可以核对下修改的 <strong>/etc/pve/lxc/103.conf</strong> 文件是否有变动，偶尔有发现更改未生效的情况。</p>
+<p><strong>以下操作在容器中进行</strong></p>
+<p>输入以下命令，检查显卡是否被挂载</p>
+<pre><code class="language-bash">ls -l /dev/dri/
+</code></pre>
+<p>正常情况下会得到以下输出，说明显卡挂载成功</p>
+<pre><code class="language-bash">root@Ubuntu:~# ls -l /dev/dri/
+total 0
+crwxrwxrwx 1 root postfix 226, 128 Apr  5 08:56 renderD128
+</code></pre>
+<p><strong>执行以下操作，获取显卡权限（此操作重要）</strong></p>
+<pre><code class="language-bash">chmod 777 /dev/dri/*
+</code></pre>
+<p>输入命令更换显卡驱动和检测工具</p>
+<pre><code class="language-bash">apt-get install -y intel-media-va-driver-non-free &amp;&amp; i965-va-driver-shaders &amp;&amp; vainfo
+</code></pre>
+<p>执行以下命令检查</p>
+<pre><code class="language-bash">vainfo
+</code></pre>
+<p>得到类似如下的输出说明硬解配置成功</p>
+<pre><code class="language-bash">root@Ubuntu:~# vainfo
+error: can't connect to X server!
+libva info: VA-API version 1.7.0
+libva info: Trying to open /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so
+libva info: Found init function __vaDriverInit_1_7
+libva info: va_openDriver() returns 0
+vainfo: VA-API version: 1.7 (libva 2.6.0)
+vainfo: Driver version: Intel iHD driver for Intel(R) Gen Graphics - 20.1.1 ()
+vainfo: Supported profile and entrypoints
+      VAProfileNone                   : VAEntrypointVideoProc
+      VAProfileNone                   : VAEntrypointStats
+      VAProfileMPEG2Simple            : VAEntrypointVLD
+      VAProfileMPEG2Simple            : VAEntrypointEncSlice
+      VAProfileMPEG2Main              : VAEntrypointVLD
+      VAProfileMPEG2Main              : VAEntrypointEncSlice
+      VAProfileH264Main               : VAEntrypointVLD
+      VAProfileH264Main               : VAEntrypointEncSlice
+      VAProfileH264Main               : VAEntrypointFEI
+      VAProfileH264Main               : VAEntrypointEncSliceLP
+      VAProfileH264High               : VAEntrypointVLD
+      VAProfileH264High               : VAEntrypointEncSlice
+      VAProfileH264High               : VAEntrypointFEI
+      VAProfileH264High               : VAEntrypointEncSliceLP
+      VAProfileVC1Simple              : VAEntrypointVLD
+      VAProfileVC1Main                : VAEntrypointVLD
+      VAProfileVC1Advanced            : VAEntrypointVLD
+      VAProfileJPEGBaseline           : VAEntrypointVLD
+      VAProfileJPEGBaseline           : VAEntrypointEncPicture
+      VAProfileH264ConstrainedBaseline: VAEntrypointVLD
+      VAProfileH264ConstrainedBaseline: VAEntrypointEncSlice
+      VAProfileH264ConstrainedBaseline: VAEntrypointFEI
+      VAProfileH264ConstrainedBaseline: VAEntrypointEncSliceLP
+      VAProfileVP8Version0_3          : VAEntrypointVLD
+      VAProfileVP8Version0_3          : VAEntrypointEncSlice
+      VAProfileHEVCMain               : VAEntrypointVLD
+      VAProfileHEVCMain               : VAEntrypointEncSlice
+      VAProfileHEVCMain               : VAEntrypointFEI
+      VAProfileHEVCMain10             : VAEntrypointVLD
+      VAProfileHEVCMain10             : VAEntrypointEncSlice
+      VAProfileVP9Profile0            : VAEntrypointVLD
+      VAProfileVP9Profile2            : VAEntrypointVLD
+</code></pre>
+<p>这些输出内容就说明了显卡支持的硬解内容，包括 <strong>MPEG H264 HEVC(H265) VP9</strong> 等。</p>
+<p>部分教程使用了其他方式挂载显卡，原理是一致的。</p>
+<p>我这里主要是通过了 chmod 手动调整了访问权限，操作上更便捷一点，同时也是很重要的不能遗漏的一步。</p>
+<h2 id="四-nfs的挂载">四、NFS的挂载</h2>
+<p>直接在挂载硬盘的可以略过此步，这里也不会详细说明OMV上NFS共享的操作，具体问题请google。</p>
+<p>首先安装NFS客户端</p>
+<pre><code class="language-bash">sudo apt install nfs-common
+</code></pre>
+<p>检查LXC容器是否有对应NFS共享文件夹的访问权限，其中 192.168.2.10 需更换为你自己共享NFS文件夹的IP地址</p>
+<pre><code class="language-bash">showmount –e 192.168.2.10
+</code></pre>
+<p>得到如下输出</p>
+<pre><code class="language-bash">Export list for 192.168.2.10:
+/export           192.168.2.1,192.168.2.2
+/export/MOVIE     192.168.2.1
+/export/HOME      192.168.2.2
+</code></pre>
+<p>其中就表示了OMV共享的文件夹以及对应的有访问权限的IP地址，根据你自己容器的IP地址选择对应的文件夹或调整OMV的分享设置。</p>
+<p>手动挂载文件夹测试，对应的IP地址和共享文件夹、挂载点根据自己情况做相应调整</p>
+<pre><code class="language-bash">mount -t nfs 192.168.2.10:/export/HOME /srv/
+</code></pre>
+<p>然后在jellyfin的媒体库中添加文件夹做测试，如果能正常访问就说明没有问题了。</p>
+<p>但是手动挂载的在系统重启之后就会失效，所以我们需要修改 /etc/fstab 来实现自动挂载。</p>
+<pre><code class="language-bash">nano /etc/fstab
+</code></pre>
+<p>根据以下调整自己的配置，我为方便使用了系统原有的文件夹，你也可以通过 mkdir 命令手动建立一个挂载用的文件夹。</p>
+<pre><code class="language-bash"># &lt;file system&gt;           &lt;dir&gt; &lt;type&gt;   &lt;options&gt;  &lt;dump&gt;	&lt;pass&gt;
+192.168.2.10:/export/HOME /srv/  nfs      defaults    0       0
+</code></pre>
+<p>重启再测试下jellyfin是否可以正常访问挂载的文件夹，如果成功基本就正常了。</p>
+<h2 id="五-硬解的配置">五、硬解的配置</h2>
+<p>在控制台-播放，按图设置即可，具体项目根据自己需要调整。或者全部选上，播放有问题时再做调整。</p>
+<p>部分功能建议关闭</p>
+<p>允许以HEVC格式编码，启用VPP色调映射，允许实时提取字幕</p>
+<figure data-type="image" tabindex="1"><img src="https://ioby-one.github.com/post-images/1641219152266.png" alt="" loading="lazy"></figure>
+<p>开启硬件解码 VAAPI</p>
+<p>设置完成后找个视频测试下转码即可，通过开启/关闭硬件解码情况下的不同CPU占用即可判断硬件解码是否生效。</p>
+<p>关闭硬件解码，CPU占用率约70%，而且较为卡顿，转码帧率7.9fps</p>
+<figure data-type="image" tabindex="2"><img src="https://ioby-one.github.com/post-images/1641219164342.png" alt="" loading="lazy"></figure>
+<p>软解码 星球大战9：天行者崛起</p>
+<p>开启硬件解码，CPU占用率约10%，转码帧率25fps，不过由于性能的问题，也很难说完全流畅</p>
+<figure data-type="image" tabindex="3"><img src="https://ioby-one.github.com/post-images/1641219171395.png" alt="" loading="lazy"></figure>
+<p>硬解码 星球大战9：天行者崛起</p>
+<p>但是通过这样的对比，可以看到硬件解码大大降低了CPU占用，就可以明确硬件解码的配置是生效了的。但是具体表现还是受到硬件性能、数据读写速度方面的限制。</p>
+<p>本文到此结束，后续有细节调整的话再看是否更新吧。</p>
+<p>例如网页界面显示方块之类的...</p>
+<h2 id="参考">参考</h2>
+<p>本文参考了以下文章和工具，一并列出。</p>
+<p><a href="https://zhuanlan.zhihu.com/p/260528145">PVE部署LXC运行docker</a></p>
+<p><a href="https://post.smzdm.com/p/apzdlwdw/">LXC安装jellyfin并开启硬件转码_存储设备_什么值得买</a></p>
+<p><a href="https://jidzhang.github.io/linux/2015/01/09/howto-showmount.html">showmount : 查看NFS共享目录</a></p>
+<p><a href="https://www.myfreax.com/how-to-mount-an-nfs-share-in-linux/">如何在Linux中挂载NFS共享</a></p>
+<p><a href="https://blog.timzhong.top/2020/10/13/jellyfin-in-lxc/">LXC安装JellyFin并轻松开启硬件编码 - TimZhong's Blog</a></p>
+<p><a href="https://jellyfin.org/docs/general/administration/hardware-acceleration.html">Hardware Acceleration</a></p>
+<p><a href="https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/">ubuntu 镜像站使用帮助 清华大学开源软件镜像站 Tsinghua Open Source Mirror</a></p>
+<p><a href="https://github.com/ivanhao/pvetools">ivanhao/pvetools</a></p>
+
+                </div>
+            </article>
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">温故而知新</div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://ioby-one.github.com/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.highlightAll()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
