@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://ioby-one.github.com</id>
-    <title>Gridea</title>
-    <updated>2022-01-03T14:55:30.864Z</updated>
+    <title>Blog by One</title>
+    <updated>2022-01-03T14:58:08.106Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://ioby-one.github.com"/>
     <link rel="self" href="https://ioby-one.github.com/atom.xml"/>
-    <subtitle>温故而知新</subtitle>
+    <subtitle>「多看看世界的美好」</subtitle>
     <logo>https://ioby-one.github.com/images/avatar.png</logo>
     <icon>https://ioby-one.github.com/favicon.ico</icon>
-    <rights>All rights reserved 2022, Gridea</rights>
+    <rights>All rights reserved 2022, Blog by One</rights>
     <entry>
         <title type="html"><![CDATA[PVE上安装jellyfin并实现硬解（on LXC）]]></title>
         <id>https://ioby-one.github.com/post/install-jellyfin-on-PVE-with-LXC-and-enable-hardware-acceleration/</id>
