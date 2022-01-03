@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://ioby-one.github.com</id>
+    <id>https://blog.ioby.one</id>
     <title>Blog by One</title>
-    <updated>2022-01-03T14:58:08.106Z</updated>
+    <updated>2022-01-03T15:24:23.811Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://ioby-one.github.com"/>
-    <link rel="self" href="https://ioby-one.github.com/atom.xml"/>
+    <link rel="alternate" href="https://blog.ioby.one"/>
+    <link rel="self" href="https://blog.ioby.one/atom.xml"/>
     <subtitle>「多看看世界的美好」</subtitle>
-    <logo>https://ioby-one.github.com/images/avatar.png</logo>
-    <icon>https://ioby-one.github.com/favicon.ico</icon>
+    <logo>https://blog.ioby.one/images/avatar.png</logo>
+    <icon>https://blog.ioby.one/favicon.ico</icon>
     <rights>All rights reserved 2022, Blog by One</rights>
     <entry>
         <title type="html"><![CDATA[PVE上安装jellyfin并实现硬解（on LXC）]]></title>
-        <id>https://ioby-one.github.com/post/install-jellyfin-on-PVE-with-LXC-and-enable-hardware-acceleration/</id>
-        <link href="https://ioby-one.github.com/post/install-jellyfin-on-PVE-with-LXC-and-enable-hardware-acceleration/">
+        <id>https://blog.ioby.one/post/install-jellyfin-on-PVE-with-LXC-and-enable-hardware-acceleration/</id>
+        <link href="https://blog.ioby.one/post/install-jellyfin-on-PVE-with-LXC-and-enable-hardware-acceleration/">
         </link>
         <updated>2021-04-05T13:55:55.000Z</updated>
         <content type="html"><![CDATA[<p>V0.1 2021.04.05 基于 intel CPU的软路由(集显HD610)，PVE 6.3-3，jellyfin 10.7.1</p>
@@ -215,14 +215,14 @@ vainfo: Supported profile and entrypoints
 <p>在控制台-播放，按图设置即可，具体项目根据自己需要调整。或者全部选上，播放有问题时再做调整。</p>
 <p>部分功能建议关闭</p>
 <p>允许以HEVC格式编码，启用VPP色调映射，允许实时提取字幕</p>
-<figure data-type="image" tabindex="1"><img src="https://ioby-one.github.com/post-images/1641219152266.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://blog.ioby.one/post-images/1641219152266.png" alt="" loading="lazy"></figure>
 <p>开启硬件解码 VAAPI</p>
 <p>设置完成后找个视频测试下转码即可，通过开启/关闭硬件解码情况下的不同CPU占用即可判断硬件解码是否生效。</p>
 <p>关闭硬件解码，CPU占用率约70%，而且较为卡顿，转码帧率7.9fps</p>
-<figure data-type="image" tabindex="2"><img src="https://ioby-one.github.com/post-images/1641219164342.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://blog.ioby.one/post-images/1641219164342.png" alt="" loading="lazy"></figure>
 <p>软解码 星球大战9：天行者崛起</p>
 <p>开启硬件解码，CPU占用率约10%，转码帧率25fps，不过由于性能的问题，也很难说完全流畅</p>
-<figure data-type="image" tabindex="3"><img src="https://ioby-one.github.com/post-images/1641219171395.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://blog.ioby.one/post-images/1641219171395.png" alt="" loading="lazy"></figure>
 <p>硬解码 星球大战9：天行者崛起</p>
 <p>但是通过这样的对比，可以看到硬件解码大大降低了CPU占用，就可以明确硬件解码的配置是生效了的。但是具体表现还是受到硬件性能、数据读写速度方面的限制。</p>
 <p>本文到此结束，后续有细节调整的话再看是否更新吧。</p>

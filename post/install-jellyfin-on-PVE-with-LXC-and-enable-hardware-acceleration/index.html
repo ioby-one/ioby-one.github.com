@@ -6,10 +6,10 @@
 
 <title>PVE上安装jellyfin并实现硬解（on LXC） | Blog by One</title>
 
-<link rel="shortcut icon" href="https://ioby-one.github.com/favicon.ico?v=1641221881290">
+<link rel="shortcut icon" href="https://blog.ioby.one/favicon.ico?v=1641223461837">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://ioby-one.github.com/styles/main.css">
+<link rel="stylesheet" href="https://blog.ioby.one/styles/main.css">
 <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"> -->
 
 <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
@@ -77,7 +77,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1641221881290"
+            <form id="gridea-search-form" style="position: relative" data-update="1641223461837"
                 action="/search/">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -108,27 +108,27 @@
                         · 2021-04-05 ·
                     </time>
                     
-                        <a href="https://ioby-one.github.com/tag/g_Ee8Zxmq/" class="post-tags">
+                        <a href="https://blog.ioby.one/tag/g_Ee8Zxmq/" class="post-tags">
                             # Jellyfin
                         </a>
                     
-                        <a href="https://ioby-one.github.com/tag/7PxM4a-c2a/" class="post-tags">
+                        <a href="https://blog.ioby.one/tag/7PxM4a-c2a/" class="post-tags">
                             # LXC
                         </a>
                     
-                        <a href="https://ioby-one.github.com/tag/tPAPLxp5Z_/" class="post-tags">
+                        <a href="https://blog.ioby.one/tag/tPAPLxp5Z_/" class="post-tags">
                             # NFS
                         </a>
                     
-                        <a href="https://ioby-one.github.com/tag/nz23g-4jlA/" class="post-tags">
+                        <a href="https://blog.ioby.one/tag/nz23g-4jlA/" class="post-tags">
                             # OMV
                         </a>
                     
-                        <a href="https://ioby-one.github.com/tag/bmGK-qUeFy/" class="post-tags">
+                        <a href="https://blog.ioby.one/tag/bmGK-qUeFy/" class="post-tags">
                             # PVE
                         </a>
                     
-                        <a href="https://ioby-one.github.com/tag/_tbih4CXYn/" class="post-tags">
+                        <a href="https://blog.ioby.one/tag/_tbih4CXYn/" class="post-tags">
                             # Ubuntu
                         </a>
                     
@@ -333,14 +333,14 @@ vainfo: Supported profile and entrypoints
 <p>在控制台-播放，按图设置即可，具体项目根据自己需要调整。或者全部选上，播放有问题时再做调整。</p>
 <p>部分功能建议关闭</p>
 <p>允许以HEVC格式编码，启用VPP色调映射，允许实时提取字幕</p>
-<figure data-type="image" tabindex="1"><img src="https://ioby-one.github.com/post-images/1641219152266.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://blog.ioby.one/post-images/1641219152266.png" alt="" loading="lazy"></figure>
 <p>开启硬件解码 VAAPI</p>
 <p>设置完成后找个视频测试下转码即可，通过开启/关闭硬件解码情况下的不同CPU占用即可判断硬件解码是否生效。</p>
 <p>关闭硬件解码，CPU占用率约70%，而且较为卡顿，转码帧率7.9fps</p>
-<figure data-type="image" tabindex="2"><img src="https://ioby-one.github.com/post-images/1641219164342.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://blog.ioby.one/post-images/1641219164342.png" alt="" loading="lazy"></figure>
 <p>软解码 星球大战9：天行者崛起</p>
 <p>开启硬件解码，CPU占用率约10%，转码帧率25fps，不过由于性能的问题，也很难说完全流畅</p>
-<figure data-type="image" tabindex="3"><img src="https://ioby-one.github.com/post-images/1641219171395.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://blog.ioby.one/post-images/1641219171395.png" alt="" loading="lazy"></figure>
 <p>硬解码 星球大战9：天行者崛起</p>
 <p>但是通过这样的对比，可以看到硬件解码大大降低了CPU占用，就可以明确硬件解码的配置是生效了的。但是具体表现还是受到硬件性能、数据读写速度方面的限制。</p>
 <p>本文到此结束，后续有细节调整的话再看是否更新吧。</p>
@@ -390,7 +390,7 @@ vainfo: Supported profile and entrypoints
     </div>
     <div>
         Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
-                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://ioby-one.github.com/atom.xml" target="_blank">RSS</a></a>
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://blog.ioby.one/atom.xml" target="_blank">RSS</a></a>
     </div>
 </div>
 
