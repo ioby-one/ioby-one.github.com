@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.ioby.one</id>
     <title>Blog by One</title>
-    <updated>2022-07-10T06:49:12.701Z</updated>
+    <updated>2022-07-10T06:55:00.068Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.ioby.one"/>
     <link rel="self" href="https://blog.ioby.one/atom.xml"/>
